@@ -159,6 +159,6 @@ Widget buildSingUpButton(BuildContext context) => Padding(
           child: const Text(
             'Utwórz konto',
             style:
-                TextStyle(color: color3, fontFamily: 'Segoe UI', fontSize: 14),
+                TextStyle(color: color3, fontFamily: 'Segoe UI', fontSize: 12),
           )),
     );

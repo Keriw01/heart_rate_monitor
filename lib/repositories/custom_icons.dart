@@ -27,4 +27,6 @@ class CustomIcons {
 
   static const IconData user =
       IconData(0xf007, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData heartbeat =
+      IconData(0xf21e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

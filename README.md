@@ -14,5 +14,8 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-
+Font Awesome 5, Copyright (C) 2016 by Dave Gandy
+Author:    Dave Gandy
+License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
+Homepage:  http://fortawesome.github.com/Font-Awesome/ 
 <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a>

@@ -1,38 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heart_rate_monitor/repositories/custom_icons.dart';
-import 'package:heart_rate_monitor/theme/colors.dart';
-import '../pages/sign_up.dart';
-import '../pages/home.dart';
+import '../models/login_user.dart';
+import '../services/auth.dart';
+import '../theme/colors.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  final Function? toggleView;
+
+  const LoginPage({super.key, this.toggleView});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: color1,
-      body: Center(
-        child: SingleChildScrollView(
-          reverse: true,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              buildText(),
-              buildLogo(),
-              buildUsernameField(),
-              buildPasswordField(),
-              buildLoginButton(context),
-              buildSingUpButton(context)
-            ],
-          ),
-        ),
-      ),
-    );
+  State<LoginPage> createState() {
+    return _LoginPageState();
   }
 }
 
-Widget buildText() => Padding(
+class _LoginPageState extends State<LoginPage> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthService _auth = AuthService();
+
+  @override
+  Widget build(BuildContext context) {
+    final buildText = Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
       child: Container(
         alignment: Alignment.center,
@@ -48,25 +40,31 @@ Widget buildText() => Padding(
       ),
     );
 
-Widget buildLogo() => SvgPicture.asset(
+    final buildLogo = SvgPicture.asset(
       'assets/images/undraw_medicine_b-1-ol.svg',
       width: 200,
       height: 200,
     );
 
-Widget buildUsernameField() => Padding(
+    final buildUsernameField = Padding(
       padding: const EdgeInsets.fromLTRB(55, 40, 55, 5),
       child: TextFormField(
+        controller: _email,
         autocorrect: true,
         textCapitalization: TextCapitalization.words,
         enableSuggestions: false,
         validator: (value) {
+          if (value != null) {
+            if (value.contains('@')) {
+              return null;
+            }
+            return 'Wprowadź poprawny adres e-mail';
+          }
           return null;
         },
         cursorColor: color2,
         style: const TextStyle(
             color: color3, fontFamily: 'OpenSans', fontSize: 14),
-        // ignore: prefer_const_constructors
         decoration: const InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -85,14 +83,21 @@ Widget buildUsernameField() => Padding(
           labelStyle: TextStyle(color: color3),
           floatingLabelStyle: TextStyle(color: color3),
         ),
-        onSaved: (username) {},
       ),
     );
 
-Widget buildPasswordField() => Padding(
+    final buildPasswordField = Padding(
       padding: const EdgeInsets.fromLTRB(55, 20, 55, 20),
       child: TextFormField(
+        controller: _password,
         validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Hasło jest wymagane';
+          }
+          if (value.trim().length < 8) {
+            return 'Hasło musi mieć co najmniej 8 znaków';
+          }
+          // Return null if the entered password is valid
           return null;
         },
         cursorColor: color2,
@@ -117,16 +122,27 @@ Widget buildPasswordField() => Padding(
           floatingLabelStyle: TextStyle(color: color3),
         ),
         obscureText: true,
-        onSaved: (password) {},
       ),
     );
 
-Widget buildLoginButton(BuildContext context) => Padding(
+    final buildLoginButton = Padding(
       padding: const EdgeInsets.only(top: 20),
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Home()));
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            dynamic result = await _auth.signInEmailPassword(
+                LoginUser(email: _email.text, password: _password.text));
+            if (result.uid == null) {
+              //null means unsuccessfull authentication
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: Text(result.code),
+                    );
+                  });
+            }
+          }
         },
         style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
@@ -144,12 +160,11 @@ Widget buildLoginButton(BuildContext context) => Padding(
       ),
     );
 
-Widget buildSingUpButton(BuildContext context) => Padding(
+    final buildSingUpButton = Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const SignUp()));
+            widget.toggleView!();
           },
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -162,3 +177,30 @@ Widget buildSingUpButton(BuildContext context) => Padding(
                 TextStyle(color: color3, fontFamily: 'Segoe UI', fontSize: 12),
           )),
     );
+
+    return Scaffold(
+      backgroundColor: color1,
+      body: Center(
+        child: SingleChildScrollView(
+          reverse: true,
+          child: Column(
+            children: [
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      buildText,
+                      buildLogo,
+                      buildUsernameField,
+                      buildPasswordField,
+                      buildLoginButton,
+                      buildSingUpButton,
+                    ],
+                  ))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,11 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: unused_import
-import '../pages/login.dart';
-import '../pages/sign_up.dart';
+import 'package:provider/provider.dart';
+import '../services/auth.dart';
+import '../models/firebase_user.dart';
+import '../pages/wrapper.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(const MyApp()));
 }
@@ -15,12 +18,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Heart Rate Monitor',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return StreamProvider<FirebaseUser?>.value(
+      value: AuthService().user,
+      initialData: null,
+      child: const MaterialApp(
+        home: Wrapper(),
       ),
-      home: const SignUp(),
     );
   }
 }

@@ -1,13 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:heart_rate_monitor/repositories/custom_icons.dart';
-import '../services/auth.dart';
-import '../models/login_user.dart';
 import '../theme/colors.dart';
 
 class SignUp extends StatefulWidget {
-  final Function? toggleView;
-
-  const SignUp({super.key, this.toggleView});
+  final VoidCallback showLoginPage;
+  const SignUp({super.key, required this.showLoginPage});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,14 +16,52 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final AuthService _auth = AuthService();
-
   final _email = TextEditingController();
   final _password = TextEditingController();
+  final _passwordConfirmed = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  CollectionReference users =
+      FirebaseFirestore.instance.collection('results_of_pressure');
+  Future<void> addUser() {
+    return users.doc(_email.text.trim()).set({'e-mail': _email.text.trim()});
+  }
+
+  Future signUp() async {
+    if (passwordConfirmed()) {
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _email.text.trim(), password: _password.text.trim());
+        addUser();
+      } on FirebaseAuthException catch (e) {
+        if (kDebugMode) {
+          print('Failed with error code: ${e.code}');
+          print(e.message);
+        }
+      }
+    }
+  }
+
+  bool passwordConfirmed() {
+    if (_password.text.trim() == _passwordConfirmed.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    const OutlineInputBorder borderInput = OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderSide: BorderSide(color: color3, width: 1));
+
     final buildText = Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
       child: Column(
@@ -72,7 +110,7 @@ class _SignUpState extends State<SignUp> {
           return null;
         },
         autocorrect: true,
-        textCapitalization: TextCapitalization.words,
+        keyboardType: TextInputType.emailAddress,
         enableSuggestions: false,
         cursorColor: color2,
         style: const TextStyle(
@@ -80,12 +118,10 @@ class _SignUpState extends State<SignUp> {
         decoration: const InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
+          errorBorder: borderInput,
+          focusedErrorBorder: borderInput,
+          focusedBorder: borderInput,
+          enabledBorder: borderInput,
           prefixIcon: Icon(
             CustomIcons.user,
             color: color3,
@@ -118,12 +154,10 @@ class _SignUpState extends State<SignUp> {
         decoration: const InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
+          errorBorder: borderInput,
+          focusedErrorBorder: borderInput,
+          focusedBorder: borderInput,
+          enabledBorder: borderInput,
           prefixIcon: Icon(
             Icons.lock,
             color: color3,
@@ -137,25 +171,50 @@ class _SignUpState extends State<SignUp> {
       ),
     );
 
+    final buildConfirmPasswordField = Padding(
+      padding: const EdgeInsets.fromLTRB(55, 10, 55, 20),
+      child: TextFormField(
+        controller: _passwordConfirmed,
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Hasło jest wymagane';
+          }
+          if (value.trim().length < 8) {
+            return 'Hasło musi mieć co najmniej 8 znaków';
+          }
+          if (value.trim() != _password.text.trim()) {
+            return 'Hasła muszą być takie same';
+          }
+          // Return null if the entered password is valid
+          return null;
+        },
+        cursorColor: color2,
+        style: const TextStyle(
+            color: color3, fontFamily: 'OpenSans', fontSize: 14),
+        decoration: const InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          errorBorder: borderInput,
+          focusedErrorBorder: borderInput,
+          focusedBorder: borderInput,
+          enabledBorder: borderInput,
+          prefixIcon: Icon(
+            Icons.lock,
+            color: color3,
+            size: 16,
+          ),
+          labelText: 'Wpisz ponownie hasło',
+          labelStyle: TextStyle(color: color3),
+          floatingLabelStyle: TextStyle(color: color3),
+        ),
+        obscureText: true,
+      ),
+    );
+
     final buildSignUpButton = Padding(
       padding: const EdgeInsets.only(top: 20),
       child: ElevatedButton(
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            dynamic result = await _auth.registerEmailPassword(
-                LoginUser(email: _email.text, password: _password.text));
-            if (result.uid == null) {
-              //null means unsuccessfull authentication
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text(result.code),
-                    );
-                  });
-            }
-          }
-        },
+        onPressed: signUp,
         style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
                 const EdgeInsets.fromLTRB(75, 10, 75, 10)),
@@ -175,9 +234,7 @@ class _SignUpState extends State<SignUp> {
     final buildLoginBackButton = Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextButton(
-          onPressed: () {
-            widget.toggleView!();
-          },
+          onPressed: widget.showLoginPage,
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
             splashFactory: NoSplash.splashFactory,
@@ -215,6 +272,7 @@ class _SignUpState extends State<SignUp> {
                     buildLogo,
                     buildUsernameField,
                     buildPasswordField,
+                    buildConfirmPasswordField,
                     buildSignUpButton,
                     buildLoginBackButton
                   ],

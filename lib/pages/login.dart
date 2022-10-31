@@ -1,14 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heart_rate_monitor/repositories/custom_icons.dart';
-import '../models/login_user.dart';
-import '../services/auth.dart';
 import '../theme/colors.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function? toggleView;
+  final VoidCallback showRegisterPage;
 
-  const LoginPage({super.key, this.toggleView});
+  const LoginPage({super.key, required this.showRegisterPage});
 
   @override
   State<LoginPage> createState() {
@@ -20,10 +20,32 @@ class _LoginPageState extends State<LoginPage> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthService _auth = AuthService();
+
+  Future signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _email.text.trim(), password: _password.text.trim());
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) {
+        print('Failed with error code: ${e.code}');
+        print(e.message);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    const OutlineInputBorder borderInput = OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderSide: BorderSide(color: color3, width: 1));
+
     final buildText = Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
       child: Container(
@@ -51,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
       child: TextFormField(
         controller: _email,
         autocorrect: true,
-        textCapitalization: TextCapitalization.words,
+        keyboardType: TextInputType.emailAddress,
         enableSuggestions: false,
         validator: (value) {
           if (value != null) {
@@ -68,12 +90,10 @@ class _LoginPageState extends State<LoginPage> {
         decoration: const InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
+          errorBorder: borderInput,
+          focusedErrorBorder: borderInput,
+          focusedBorder: borderInput,
+          enabledBorder: borderInput,
           prefixIcon: Icon(
             CustomIcons.user,
             color: color3,
@@ -106,12 +126,10 @@ class _LoginPageState extends State<LoginPage> {
         decoration: const InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(color: color3, width: 1)),
+          errorBorder: borderInput,
+          focusedErrorBorder: borderInput,
+          focusedBorder: borderInput,
+          enabledBorder: borderInput,
           prefixIcon: Icon(
             Icons.lock,
             color: color3,
@@ -128,22 +146,7 @@ class _LoginPageState extends State<LoginPage> {
     final buildLoginButton = Padding(
       padding: const EdgeInsets.only(top: 20),
       child: ElevatedButton(
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            dynamic result = await _auth.signInEmailPassword(
-                LoginUser(email: _email.text, password: _password.text));
-            if (result.uid == null) {
-              //null means unsuccessfull authentication
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text(result.code),
-                    );
-                  });
-            }
-          }
-        },
+        onPressed: signIn,
         style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
                 const EdgeInsets.fromLTRB(75, 10, 75, 10)),
@@ -163,9 +166,7 @@ class _LoginPageState extends State<LoginPage> {
     final buildSingUpButton = Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextButton(
-          onPressed: () {
-            widget.toggleView!();
-          },
+          onPressed: widget.showRegisterPage,
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
             splashFactory: NoSplash.splashFactory,

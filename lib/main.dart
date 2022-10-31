@@ -1,10 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import '../services/auth.dart';
-import '../models/firebase_user.dart';
-import '../pages/wrapper.dart';
+import 'auth/main_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +15,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<FirebaseUser?>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: const MaterialApp(
-        home: Wrapper(),
-      ),
+    return const MaterialApp(
+      home: MainPage(),
     );
   }
 }

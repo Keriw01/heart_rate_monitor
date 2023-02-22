@@ -44,12 +44,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           actions: <Widget>[
                             TextButton(
                               onPressed: () => Navigator.pop(context, "Cancel"),
-                              child: const Text("Cancel"),
                               style: ButtonStyle(
                                 foregroundColor:
                                     MaterialStateProperty.all(color4),
                                 overlayColor: MaterialStateProperty.all(color2),
                               ),
+                              child: const Text("Cancel"),
                             )
                           ],
                         ));

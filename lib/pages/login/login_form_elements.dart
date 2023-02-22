@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../theme/colors.dart';
+import '../../theme/colors.dart';
 import 'package:heart_rate_monitor/repositories/custom_icons.dart';
 
 const OutlineInputBorder borderInput = OutlineInputBorder(
@@ -81,7 +81,6 @@ Widget buildPasswordField(TextEditingController password) {
         if (value.trim().length < 8) {
           return 'Hasło musi mieć co najmniej 8 znaków';
         }
-        // Return null if the entered password is valid
         return null;
       },
       cursorColor: color2,

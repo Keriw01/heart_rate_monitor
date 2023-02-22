@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/colors.dart';
-import '../repositories/custom_icons.dart';
+import '../../theme/colors.dart';
+import '../../repositories/custom_icons.dart';
 
 const OutlineInputBorder borderInput = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -135,7 +135,6 @@ Widget buildConfirmPasswordField(
         if (value.trim() != password.text.trim()) {
           return 'Hasła muszą być takie same';
         }
-        // Return null if the entered password is valid
         return null;
       },
       cursorColor: color2,

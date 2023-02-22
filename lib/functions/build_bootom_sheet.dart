@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:heart_rate_monitor/model/pressure.dart';
 
-void buildBottomSheet(BuildContext context, currentSystolicValue,
-    currentDiastolicValue, currentPulseValue, Function saveData) {
+final user = FirebaseAuth.instance.currentUser;
+
+final pressureRef = FirebaseFirestore.instance
+    .collection('results_of_pressure')
+    .doc(user?.email)
+    .collection('results_pressure')
+    .withConverter<Pressure>(
+      fromFirestore: (snapshot, _) => Pressure.fromJson(snapshot.data()!),
+      toFirestore: (pressure, _) => pressure.toJson(),
+    );
+Future<void> saveData(
+    currentSystolicValue, currentDiastolicValue, currentPulseValue) async {
+  await pressureRef
+      .add(
+        Pressure(
+            systolic: currentSystolicValue.round().toString(),
+            diastolic: currentDiastolicValue.round().toString(),
+            pulse: currentPulseValue.round().toString(),
+            addDate: DateTime.now()),
+      )
+      .then((value) =>
+          (pressureRef.doc(value.id).update({'idElement': value.id})));
+  //.catchError((error) => print("Failed to add user: $error"));
+}
+
+void buildBottomSheet(BuildContext context) {
+  double currentSystolicValue = 0;
+  double currentDiastolicValue = 0;
+  double currentPulseValue = 0;
   showModalBottomSheet(
       backgroundColor: color4,
       context: context,
@@ -210,10 +240,10 @@ void buildBottomSheet(BuildContext context, currentSystolicValue,
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       SizedBox.fromSize(
-                        size: const Size(56, 56),
+                        size: const Size(40, 40),
                         child: ClipOval(
                           child: Material(
                             color: Colors.white,

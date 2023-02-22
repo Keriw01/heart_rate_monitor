@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../pages/sign_up_form_elements.dart';
-import '../theme/colors.dart';
+import 'sign_up_form_elements.dart';
+import '../../theme/colors.dart';
 
 class SignUp extends StatefulWidget {
-  final VoidCallback showLoginPage;
-  const SignUp({super.key, required this.showLoginPage});
+  final VoidCallback changeFlagShowLoginPage;
+  const SignUp({super.key, required this.changeFlagShowLoginPage});
 
   @override
   State<StatefulWidget> createState() {
@@ -76,7 +76,7 @@ class _SignUpState extends State<SignUp> {
                     buildPasswordField(_password),
                     buildConfirmPasswordField(_password, _passwordConfirmed),
                     buildSignUpButton(signUp),
-                    buildLoginBackButton(widget.showLoginPage)
+                    buildLoginBackButton(widget.changeFlagShowLoginPage)
                   ],
                 ),
               )

@@ -1,14 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:heart_rate_monitor/model/pressure.dart';
 import '../pages/settings.dart';
 import '../pages/stats.dart';
 import '../pages/history.dart';
 import '../pages/raport.dart';
 import '../theme/colors.dart';
 import '../functions/build_bootom_sheet.dart';
-// ignore: unused_import
 import '../theme/custom_floating_button.dart';
 
 class Home extends StatefulWidget {
@@ -23,9 +19,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int index = 1;
 
-  double currentSystolicValue = 0;
-  double currentDiastolicValue = 0;
-  double currentPulseValue = 0;
   List<StatefulWidget> pages = [
     const StatsPage(),
     const HistoryPage(),
@@ -187,43 +180,16 @@ class _HomeState extends State<Home> {
         splashColor: color3,
         backgroundColor: color3,
         onPressed: () {
-          buildBottomSheet(context, currentSystolicValue, currentDiastolicValue,
-              currentPulseValue, saveData);
+          buildBottomSheet(context);
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Icon(
+        shape: const CustomFloatingButton(),
+        child: const Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: Icon(
               Icons.add,
               size: 32,
-            )
-          ],
-        ),
+            )),
       ),
     );
   }
-}
-
-final user = FirebaseAuth.instance.currentUser;
-final pressureRef = FirebaseFirestore.instance
-    .collection('results_of_pressure')
-    .doc(user?.email)
-    .collection('results_pressure')
-    .withConverter<Pressure>(
-      fromFirestore: (snapshot, _) => Pressure.fromJson(snapshot.data()!),
-      toFirestore: (pressure, _) => pressure.toJson(),
-    );
-Future<void> saveData(
-    currentSystolicValue, currentDiastolicValue, currentPulseValue) async {
-  await pressureRef
-      .add(
-        Pressure(
-            systolic: currentSystolicValue.round().toString(),
-            diastolic: currentDiastolicValue.round().toString(),
-            pulse: currentPulseValue.round().toString(),
-            addDate: DateTime.now()),
-      )
-      .then((value) =>
-          (pressureRef.doc(value.id).update({'idElement': value.id})));
-  //.catchError((error) => print("Failed to add user: $error"));
 }

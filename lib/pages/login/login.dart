@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../theme/colors.dart';
-import '../pages/login_form_elements.dart';
+import '../../theme/colors.dart';
+import 'login_form_elements.dart';
 
 class LoginPage extends StatefulWidget {
-  final VoidCallback showRegisterPage;
+  final VoidCallback changeFlagShowLoginPage;
 
-  const LoginPage({super.key, required this.showRegisterPage});
+  const LoginPage({super.key, required this.changeFlagShowLoginPage});
 
   @override
   State<LoginPage> createState() {
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                       buildUsernameField(_email),
                       buildPasswordField(_password),
                       buildLoginButton(signIn),
-                      buildSingUpButton(widget.showRegisterPage),
+                      buildSingUpButton(widget.changeFlagShowLoginPage),
                     ],
                   ))
             ],

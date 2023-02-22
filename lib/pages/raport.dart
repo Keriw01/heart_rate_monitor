@@ -12,8 +12,7 @@ class RaportPage extends StatefulWidget {
 class _RaportPageState extends State<RaportPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         const SizedBox(
@@ -28,6 +27,6 @@ class _RaportPageState extends State<RaportPage> {
             style: buttonElevatedStyle(),
             child: const Text("generate"))
       ],
-    ));
+    );
   }
 }

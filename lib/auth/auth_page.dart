@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:heart_rate_monitor/pages/login.dart';
-import 'package:heart_rate_monitor/pages/sign_up.dart';
+import 'package:heart_rate_monitor/pages/login/login.dart';
+import 'package:heart_rate_monitor/pages/sign_up/sign_up.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -11,7 +11,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   bool showLoginPage = true;
-  void toggleScreens() {
+  void changeFlagShowLoginPage() {
     setState(() {
       showLoginPage = !showLoginPage;
     });
@@ -20,9 +20,9 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     if (showLoginPage) {
-      return LoginPage(showRegisterPage: toggleScreens);
+      return LoginPage(changeFlagShowLoginPage: changeFlagShowLoginPage);
     } else {
-      return SignUp(showLoginPage: toggleScreens);
+      return SignUp(changeFlagShowLoginPage: changeFlagShowLoginPage);
     }
   }
 }

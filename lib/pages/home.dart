@@ -4,6 +4,8 @@ import '../pages/stats.dart';
 import '../pages/history.dart';
 import '../pages/raport.dart';
 import '../theme/colors.dart';
+import '../functions/build_bootom_sheet.dart';
+import '../theme/custom_floating_button.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,15 +18,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int index = 1;
+
   List<StatefulWidget> pages = [
     const StatsPage(),
     const HistoryPage(),
     const RaportPage()
   ];
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: color1,
       appBar: AppBar(
         shape: const RoundedRectangleBorder(
@@ -70,17 +74,19 @@ class _HomeState extends State<Home> {
                 BottomNavigationBarItem(
                     icon: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Statystyki',
                           style: TextStyle(
                               color: color4,
                               fontSize: 18,
                               fontFamily: 'Montserrat-Medium',
-                              fontWeight: FontWeight.w400),
+                              fontWeight: index == 0
+                                  ? FontWeight.w600
+                                  : FontWeight.w400),
                         ),
                         index == 0
                             ? Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
+                                padding: const EdgeInsets.only(top: 2.0),
                                 child: Container(
                                   color: color4,
                                   width: 90,
@@ -94,17 +100,19 @@ class _HomeState extends State<Home> {
                 BottomNavigationBarItem(
                     icon: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Historia',
                           style: TextStyle(
                               color: color4,
                               fontSize: 18,
                               fontFamily: 'Montserrat-Medium',
-                              fontWeight: FontWeight.w400),
+                              fontWeight: index == 1
+                                  ? FontWeight.w600
+                                  : FontWeight.w400),
                         ),
                         index == 1
                             ? Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
+                                padding: const EdgeInsets.only(top: 2.0),
                                 child: Container(
                                   color: color4,
                                   width: 90,
@@ -118,17 +126,19 @@ class _HomeState extends State<Home> {
                 BottomNavigationBarItem(
                     icon: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Raport',
                           style: TextStyle(
                               color: color4,
                               fontSize: 18,
                               fontFamily: 'Montserrat-Medium',
-                              fontWeight: FontWeight.w400),
+                              fontWeight: index == 2
+                                  ? FontWeight.w600
+                                  : FontWeight.w400),
                         ),
                         index == 2
                             ? Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
+                                padding: const EdgeInsets.only(top: 2.0),
                                 child: Container(
                                   color: color4,
                                   width: 90,
@@ -149,8 +159,36 @@ class _HomeState extends State<Home> {
               fixedColor: color1,
             ),
           ),
-          Expanded(child: SingleChildScrollView(child: pages[index])),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Padding(
+            padding: const EdgeInsets.only(bottom: 70.0),
+            child: pages[index],
+          ))),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        clipBehavior: Clip.none,
+        elevation: 0.0,
+        focusElevation: 0.0,
+        hoverElevation: 0.0,
+        highlightElevation: 0.0,
+        disabledElevation: 0.0,
+        focusColor: color3,
+        hoverColor: color3,
+        splashColor: color3,
+        backgroundColor: color3,
+        onPressed: () {
+          buildBottomSheet(context);
+        },
+        shape: const CustomFloatingButton(),
+        child: const Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: Icon(
+              Icons.add,
+              size: 32,
+            )),
       ),
     );
   }

@@ -25,7 +25,7 @@ class _RaportPageState extends State<RaportPage> {
               PdfApi.openFile(pdfFile);
             },
             style: buttonElevatedStyle(),
-            child: const Text("generate"))
+            child: const Text("Generate"))
       ],
     );
   }

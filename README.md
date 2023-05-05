@@ -1,21 +1,7 @@
 # heart_rate_monitor
 
-A new Flutter project.
+Heart Rate Monitor
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-Font Awesome 5, Copyright (C) 2016 by Dave Gandy
-Author:    Dave Gandy
-License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
-Homepage:  http://fortawesome.github.com/Font-Awesome/ 
-<a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a>
+The Heart Rate Monitor app is a tool for monitoring your heart rate and blood pressure. Users can login or register to access their profile and enter blood pressure measurements. Data entry is very simple and intuitive. The application generates reports in PDF format containing the history of measurements. Users can view the history of measurements in a list, and the statistics section allows you to analyze the results. Thanks to these functionalities, users have better control over their health and can react to changes in a faster and more effective way.

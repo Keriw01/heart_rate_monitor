@@ -14,6 +14,4 @@ The Heart Rate Monitor application also provides a view of statistics, which are
 
 Application presentation: https://youtu.be/MCEM1EgiyKU
 
-GitHub: https://github.com/Keriw01
-
 Linkedin: https://www.linkedin.com/in/sebastian-slowik-keriw/

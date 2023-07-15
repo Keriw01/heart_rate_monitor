@@ -2,6 +2,16 @@
 
 ## Application description
 
-The Heart Rate Monitor app is a tool for monitoring your heart rate and blood pressure. Users can login or register to access their profile and enter blood pressure measurements. Data entry is very simple and intuitive. The application generates reports in PDF format containing the history of measurements. Users can view the history of measurements in a list, and the statistics section allows you to analyze the results. Thanks to these functionalities, users have better control over their health and can react to changes in a faster and more effective way.
+Heart Rate Monitor is an application that allows you to monitor your heart rate and blood pressure and manage measurement data. The application offers registration and login functions using Firebase Authentication, which provides secure access to users' personal data.
+
+After logging in, the user has access to his profile, where he can view a list of all blood pressure measurements that he has taken. To add a new measurement, the user can simply click on the heart and then use the slider to select the appropriate value for the measured pressure. All measurements are saved in the database and assigned to a specific user.
+
+One of the important functions of the application is the ability to generate reports in PDF format. The report contains a complete table with all measurement results, which can be printed or saved for further use. This allows the user to easily monitor their measurements and share them with the doctor.
+
+The Heart Rate Monitor application also provides a view of statistics, which are presented in the form of a pie chart. These statistics provide information on all measurement results, each color corresponding to a specific pressure range, allowing the user to easily evaluate their results in the context of the standard.
 
 Application presentation: https://youtube.com/shorts/f07neMUNrXM?feature=share
+
+More information on:
+GitHub: https://github.com/Keriw01
+Linkedin: https://www.linkedin.com/in/sebastian-slowik-keriw/

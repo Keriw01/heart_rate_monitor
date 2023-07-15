@@ -10,6 +10,9 @@ One of the important functions of the application is the ability to generate rep
 
 The Heart Rate Monitor application also provides a view of statistics, which are presented in the form of a pie chart. These statistics provide information on all measurement results, each color corresponding to a specific pressure range, allowing the user to easily evaluate their results in the context of the standard.
 
+![heartRateMonitor](https://github.com/Keriw01/heart_rate_monitor/assets/61714123/70b967cc-de11-460d-be96-2d75a32324f2)
+
+
 #### More information on:
 
 Application presentation: https://youtu.be/MCEM1EgiyKU
